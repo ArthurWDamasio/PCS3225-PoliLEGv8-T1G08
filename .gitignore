@@ -1,3 +1,4 @@
-./work
+/work
 
-*.bak
+*.vhd.bak
+transcript
