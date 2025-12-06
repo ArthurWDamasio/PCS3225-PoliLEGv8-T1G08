@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>PCS3225 - Sistemas Digitais 2 - AF12 - Projeto do Processador PoliLEGv8 Monociclo &lpar;grupo T1G08&rpar;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="pcs3225---sistemas-digitais-2---af12---projeto-do-processador-polilegv8-monociclo-grupo-t1g08">PCS3225 - Sistemas Digitais 2 - AF12 - Projeto do Processador PoliLEGv8 Monociclo (grupo T1G08)</h1>
+<p><strong>Integrantes:</strong></p>
+<ul>
+<li>André Saliba <strong>NUSP:</strong> 15439911</li>
+<li>Arthur Damásio <strong>NUSP:</strong> 15635138</li>
+<li>João Vítor Rocha <strong>NUSP:</strong> 15638465</li>
+<li>Henrique Falcão <strong>NUSP:</strong> 15459010</li>
+<li>Pedro Beraldo <strong>NUSP:</strong> 15484328</li>
+<li>Thiago Medeiros <strong>NUSP:</strong> 15651404</li>
+</ul>
+<hr>
+<h2 id="parte-1-biblioteca-de-componentes-básicos-do-polilegv8">Parte 1 Biblioteca de Componentes Básicos do PoliLEG<em>v</em>8</h2>
+<p>Nessa primeira etapa do projeto serão desenvolvidas as peças fundamentais para um processador, e no decorrer do projeto ela serão usadas para contruir as estruturas do fluxo de dados, como a ULA de 64 bits e o banco de registradores. Nesse sentido, seguem a baixo a declaração so 8 componentes a serem criados,em que serão especificados: (i.) descrição funcional do projeto (interfaces e lógica interna), (ii.) descrição do plano de testes, (iii.) descrição da bancada de testes e (iv.) apresentação e análise de conformidade dos resultados obtidos.</p>
+<hr>
+<h3 id="componente-1---registrador">Componente 1 - <strong>Registrador</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>Este componente atua como a unidade fundamental de memória de estado do processador. Trata-se de um registrador de carga paralela parametrizável (dataSize), projetado para operar de forma síncrona à borda de subida do clock, com um mecanismo de reset assíncrono para inicialização imediata do sistema. No contexto do PoliLEGv8, sua utilidade é crítica: ele será a base para a construção do Program Counter (PC), que rastreia a instrução atual, e do Banco de Registradores (Register File), que armazena as variáveis temporárias e operandos durante a execução das instruções. A presença do sinal enable é vital para garantir que a escrita de novos dados ocorra apenas quando instruída pela unidade de controle, preservando o estado do processador nos demais ciclos.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-2---multiplexador">Componente 2 - <strong>Multiplexador</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>O multiplexador funciona como o &quot;controlador de tráfego&quot; do fluxo de dados. É um circuito combinacional que seleciona uma entre duas entradas de dados (in0 ou in1) para ser transmitida à saída dOut, baseando-se no estado de um sinal de seleção sel. No produto final, sua função é garantir a flexibilidade do datapath. Ele será utilizado, por exemplo, para decidir se a ULA receberá um dado vindo de um registrador ou um valor imediato vindo da instrução, ou ainda para definir qual endereço será gravado no PC (o da próxima instrução sequencial ou o de um desvio condicional), sendo, portanto, essencial para a execução de diferentes tipos de instruções com o mesmo hardware.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-3---memória-de-instruções">Componente 3 - <strong>Memória de Instruções</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>Este componente representa o armazenamento do programa a ser executado, comportando-se como uma ROM (Read-Only Memory) inicializada via arquivo externo (datFileName). Sua arquitetura permite a leitura assíncrona: dado um endereço de entrada addr, a instrução correspondente de 32 bits é disponibilizada no barramento data. No ciclo do PoliLEGv8, este é o ponto de partida de qualquer operação (fase de Fetch). É daqui que o processador busca o código de máquina que será decodificado para gerar os sinais de controle que governam o restante do sistema.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-4---memória-de-dados">Componente 4 - <strong>Memória de Dados</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>Enquanto o banco de registradores armazena dados temporários de acesso rápido, a Memória de Dados atua como o armazenamento massivo do sistema (equivalente à RAM). O componente permite escrita síncrona (controlada por clock e sinal wr) e leitura assíncrona, operando com endereçamento por byte . No processador monociclo, este componente é indispensável para as instruções de acesso à memória, como LDUR (load) e STUR (store), permitindo que o processador manipule estruturas de dados complexas e variáveis que excedam a capacidade dos registradores internos.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-5---somador-binário">Componente 5 - <strong>Somador Binário</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>Este é um circuito aritmético dedicado à soma pura de dois vetores de bits, sem a complexidade de sinais de controle de uma ULA completa e sem entrada de carry-in. No projeto do PoliLEGv8, a utilidade deste somador é estratégica e separada da execução lógica de dados: ele é empregado especificamente no cálculo de endereços. Uma instância será usada para incrementar o PC constantemente (PC + 4) para apontar para a próxima instrução, enquanto outra instância calculará o endereço de destino em instruções de desvio (branches), somando o PC atual ao offset da instrução.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-6---ula-de-1-bit">Componente 6 - <strong>ULA de 1 Bit</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>A Unidade Lógica e Aritmética (ULA) de 1 bit é a célula fundamental de processamento. Projetada de forma modular, ela integra operações lógicas (AND, OR) e aritméticas (Soma), além da função Pass B, selecionáveis via multiplexador interno. Sua importância reside na escalabilidade: ao conectar 64 destas unidades em cascata (lidando com a propagação de carry), constrói-se a ULA principal do processador. É este componente que efetivamente &quot;executa&quot; as instruções lógico-aritméticas do código (como ADD, SUB, AND), transformando os dados brutos em resultados úteis e gerando flags de estado como Zero e Overflow.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-7---extensor-de-sinal-com-tamanho-configurável">Componente 7 - <strong>Extensor de Sinal com Tamanho Configurável</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>Este componente resolve a discrepância entre o tamanho das instruções (32 bits) e a arquitetura do processador (64 bits). Ele extrai um campo específico de bits da entrada e o expande para 64 bits, replicando o bit de sinal (MSB) nas posições superiores . Sua utilidade no PoliLEGv8 é crucial para decodificar valores imediatos contidos nas instruções (como constantes em somas ou offsets de memória). Sem a extensão de sinal correta, operações aritméticas com números negativos constantes ou acessos relativos à memória resultariam em valores incorretos ao serem processados pela ULA de 64 bits.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+<h3 id="componente-8---deslocador-assíncrono-de-2-bits-à-esquerda">Componente 8 - <strong>Deslocador Assíncrono de 2 Bits à Esquerda</strong></h3>
+<ol>
+<li>
+<p>Descrição funcional do projeto</p>
+<p>O deslocador realiza uma operação simples de shift left lógico de 2 bits, preenchendo as posições vazias com zeros. Embora simples, sua função é vital para o endereçamento do processador. Como o PoliLEGv8 endereça a memória byte a byte, mas as instruções possuem 4 bytes (32 bits), os endereços de desvio armazenados nas instruções representam contagens de palavras, não de bytes. Este componente converte esse valor, multiplicando-o por 4 (o equivalente binário a deslocar 2 bits à esquerda), garantindo que os saltos de programa (branches) aterrissem corretamente no início de uma instrução válida.</p>
+</li>
+<li>
+<p>Descrição do plano de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Descrição da bancada de testes</p>
+<p>a</p>
+</li>
+<li>
+<p>Análise dos resultados obtidos</p>
+<p>a</p>
+</li>
+</ol>
+<hr>
+
+            
+            
+        </body>
+        </html>
