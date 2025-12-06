@@ -1,0 +1,122 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/AF12-pt1
+Emux_n
+Z0 w1765047007
+!i122 1
+Z1 dC:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08
+Z2 8C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/mux_n.vhd
+Z3 FC:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/mux_n.vhd
+l0
+L3 1
+V`j6SoDOKLi:@f_5e3I<9P0
+!s100 YGHgl9dmdjb^o9iQ9>dek2
+Z4 OV;C;2020.1;71
+32
+Z5 !s110 1765049165
+!i10b 1
+Z6 !s108 1765049164.000000
+Z7 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/mux_n.vhd|
+Z8 !s107 C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/mux_n.vhd|
+!i113 1
+Z9 o-work work -2002 -explicit
+Z10 tExplicit 1 CvgOpt 0
+Aarch_mux_n
+DEx4 work 5 mux_n 0 22 `j6SoDOKLi:@f_5e3I<9P0
+!i122 1
+l14
+L13 7
+VR7DnX@n<9E4:SPnCMfQza2
+!s100 Q_;IoSb1]a>;>[M=S5QCH0
+R4
+32
+R5
+!i10b 1
+R6
+R7
+R8
+!i113 1
+R9
+R10
+Ereg
+Z11 w1765048887
+!i122 2
+R1
+Z12 8C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/reg_nbits.vhd
+Z13 FC:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/reg_nbits.vhd
+l0
+L3 1
+VG8F2chlA=:K8oTo358X`11
+!s100 Zng_=b2i9kA2E4W@[g7E=3
+R4
+32
+R5
+!i10b 1
+Z14 !s108 1765049165.000000
+Z15 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/reg_nbits.vhd|
+!s107 C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/reg_nbits.vhd|
+!i113 1
+R9
+R10
+Aarch_reg
+DEx4 work 3 reg 0 22 G8F2chlA=:K8oTo358X`11
+!i122 2
+l16
+L14 15
+Ve>3ka;6M4gmGUV73V_YS61
+!s100 hb>7@H0mGdLi6KJc4mB722
+R4
+32
+R5
+!i10b 1
+R14
+R15
+Z16 !s107 C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/reg_nbits.vhd|
+!i113 1
+R9
+R10
+Etwo_left_shifts
+Z17 w1765048799
+!i122 0
+R1
+Z18 8C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/desloc2.vhd
+Z19 FC:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/desloc2.vhd
+l0
+L2 1
+VOk=B4<VEDcD^WWUZGV7a83
+!s100 W]`GmUQc<`5Wlz7Zl_m;;0
+R4
+32
+Z20 !s110 1765049164
+!i10b 1
+R6
+Z21 !s90 -reportprogress|300|-work|work|-2002|-explicit|-stats=none|C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/desloc2.vhd|
+Z22 !s107 C:/Users/Arthur Damasio/Documents/Poli-USP/SD/SD2/PCS3225-PoliLEGv8-T1G08/desloc2.vhd|
+!i113 1
+R9
+R10
+Aarch_two_left_shift
+DEx4 work 15 two_left_shifts 0 22 Ok=B4<VEDcD^WWUZGV7a83
+!i122 0
+l14
+L12 6
+VA`cnNioGiUQCe6N]RfkK;2
+!s100 ZO3Zg?56=aMd]_LeI>fC60
+R4
+32
+R20
+!i10b 1
+R6
+R21
+R22
+!i113 1
+R9
+R10
