@@ -1,15 +1,15 @@
 # PCS3225 - Sistemas Digitais 2 - AF12 - Projeto do Processador PoliLEGv8 Monociclo (grupo T1G08)
 
 **Integrantes:**
-- André Saliba **NUSP:** 15439911
-- Arthur Damásio **NUSP:** 15635138
-- João Vítor Rocha **NUSP:** 15638465
-- Henrique Falcão **NUSP:** 15459010
-- Pedro Beraldo **NUSP:** 15484328
-- Thiago Medeiros **NUSP:** 15651404
+- André Saliba **NUSP:** 15439911 **Turma:** 1 **Grupo**:T1G08
+- Arthur Damásio **NUSP:** 15635138 **Turma:** 1 **Grupo**:T1G08
+- João Vítor Rocha **NUSP:** 15638465 **Turma:** 1 **Grupo**:T1G08
+- Henrique Falcão **NUSP:** 15459010 **Turma:** 1 **Grupo**:T1G08
+- Pedro Beraldo **NUSP:** 15484328 **Turma:** 1 **Grupo**:T1G08
+- Thiago Medeiros **NUSP:** 15651404 **Turma:** 1 **Grupo**:T1G08
 
 ---
-## Parte 1 Biblioteca de Componentes Básicos do PoliLEG*v*8
+## *Parte 1* - Biblioteca de Componentes Básicos do PoliLEG*v*8
 
 Nessa primeira etapa do projeto serão desenvolvidas as peças fundamentais para um processador, e no decorrer do projeto ela serão usadas para contruir as estruturas do fluxo de dados, como a ULA de 64 bits e o banco de registradores. Nesse sentido, seguem a baixo a declaração so 8 componentes a serem criados,em que serão especificados: (i.) descrição funcional do projeto (interfaces e lógica interna), (ii.) descrição do plano de testes, (iii.) descrição da bancada de testes e (iv.) apresentação e análise de conformidade dos resultados obtidos.
 
@@ -152,3 +152,4 @@ Nessa primeira etapa do projeto serão desenvolvidas as peças fundamentais para
     a
 ---
 
+## *Parte 2* - Banco de Registradores e Unidade Lógica e Aritmética
