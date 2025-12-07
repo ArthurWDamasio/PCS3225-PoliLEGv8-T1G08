@@ -6,6 +6,7 @@
 -- Pedro Beraldo    NUSP: 15484328   Turma: 1 Grupo:T1G08 --
 -- Thiago Medeiros  NUSP: 15651404   Turma: 1 Grupo:T1G08 --
 ------------------------------------------------------------
+
 library ieee;
 use ieee.numeric_bit.all;
 
