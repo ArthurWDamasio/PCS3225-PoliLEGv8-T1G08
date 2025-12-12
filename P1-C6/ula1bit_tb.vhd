@@ -29,7 +29,7 @@ architecture test of tb_ula1bit is
         );
     end component;
 
-    -- Sinais de interconexão
+    -- Sinais de interconexï¿½o
     signal s_a         : bit := '0';
     signal s_b         : bit := '0';
     signal s_cin       : bit := '0';
@@ -37,17 +37,17 @@ architecture test of tb_ula1bit is
     signal s_binvert   : bit := '0';
     signal s_operation : bit_vector(1 downto 0) := "00";
     
-    -- Sinais de saída
+    -- Sinais de saï¿½da
     signal s_result    : bit;
     signal s_cout      : bit;
     signal s_overflow  : bit;
 
-    -- Constante de tempo para estabilização
+    -- Constante de tempo para estabilizaï¿½ï¿½o
     constant T_WAIT : time := 2 ns;
 
 begin
 
-    -- Instanciação da UUT
+    -- Instanciaï¿½ï¿½o da UUT
     uut: ula1bit
         port map (
             a         => s_a,
@@ -61,7 +61,7 @@ begin
             overflow  => s_overflow
         );
 
-    -- Processo de Estímulo e Verificação
+    -- Processo de Estï¿½mulo e Verificaï¿½ï¿½o
     p_stimulus: process
     begin
         report ">>> INICIO DA SIMULACAO DA ULA DE 1 BIT <<<" severity note;
@@ -164,7 +164,7 @@ begin
         report "-> Sucesso no Pass B." severity note;
 
         ------------------------------------------------------------
-        -- Cenario 6: Detecçao de Overflow
+        -- Cenario 6: Detecao de Overflow
         ------------------------------------------------------------
         report "Cenario 6: Testando Overflow (Cin XOR Cout)..." severity note;
         s_operation <= "10"; -- Modo Soma para gerar Cout interno

@@ -7,17 +7,17 @@
 -- Thiago Medeiros  NUSP: 15651404   Turma: 1 Grupo:T1G08 --
 ------------------------------------------------------------
 
-entity fulladder is
+entity fullAdder is
   port (
     a, b, cin: in bit;
     s, cout: out bit
   );
- end entity;
+ end entity fullAdder;
 -------------------------------------------------------
-architecture structural of fulladder is
+architecture structural of fullAdder is
   signal axorb: bit;
 begin
   axorb <= a xor b;
   s <= axorb xor cin;
   cout <= (axorb and cin) or (a and b);
- end architecture;
+end architecture structural;

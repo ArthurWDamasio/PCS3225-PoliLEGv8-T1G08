@@ -23,12 +23,12 @@ end entity adder_n;
 
 architecture structural of adder_n is
 
-    component fulladder is
+    component fullAdder is
         port (
             a, b, cin : in bit;
             s, cout   : out bit
         );
-    end component;
+    end component fullAdder;
 
     signal c : bit_vector(dataSize downto 0);
 
@@ -37,7 +37,7 @@ begin
     c(0) <= '0';
 
     gen_adder: for i in 0 to dataSize-1 generate
-        inst_fulladder: fulladder
+        inst_fulladder: fullAdder
             port map (
                 a    => in0(i),
                 b    => in1(i),
