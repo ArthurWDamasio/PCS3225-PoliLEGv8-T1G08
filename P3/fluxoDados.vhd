@@ -197,18 +197,18 @@ begin
 
     InstMem: memoriaInstrucoes 
         generic map (
-            addressSize => 8, 
-            dataSize => 32, 
-            datFileName => "memInstr_conteudo.dat"
+            addressSize => 7, 
+            dataSize => 8, -- o pdf cita 8 bits, mas a instrução é de 32 bits ?
+            datFileName => "memInstrPolilegv8.dat"
         )
         port map (
-            addr => pc_out(7 downto 0), 
+            addr => pc_out(6 downto 0), 
             data => instruction
         );
 
     --Seleciona o endereço de leitura do registrador 2
     Mux_Reg2: mux_n 
-        generic map (dataSize => 5)
+        generic map (dataSize => 5) -- pdf pede 64 mas as entradas tem so 5 bits ?
         port map (
             in0  => instruction(20 downto 16), -- Rm
             in1  => instruction(4 downto 0),   -- Rt/Rd
@@ -266,13 +266,13 @@ begin
     
     DataMem: memoriaDados
         generic map (
-            addressSize => 8, --endereço recebido pela ULA
-            dataSize => 64, --dado completo
-            datFileName => "memDados_conteudo_inicial.dat")
+            addressSize => 7, --endereço recebido pela ULA
+            dataSize => 8, -- pdf cita 8 bits, mas o dado é de 64 bits ???
+            datFileName => "memDadosInicialPolilegv8.dat")
         port map (
             clock  => clock,
             wr     => memWrite,
-            addr   => alu_result(7 downto 0), -- Endereço calculado pela ULA
+            addr   => alu_result(6 downto 0), -- Endereço calculado pela ULA
             data_i => read_data2,             -- Dado para escrita vem do Reg2
             data_o => mem_data_aux
         );
