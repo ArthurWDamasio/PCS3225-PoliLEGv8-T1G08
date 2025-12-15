@@ -1,3 +1,4 @@
+
 ------------------------------------------------------------
 -- Andre Saliba     NUSP: 15439911   Turma: 1 Grupo:T1G08 --
 -- Arthur Damasio   NUSP: 15635138   Turma: 1 Grupo:T1G08 --
@@ -14,7 +15,7 @@ use std.textio.all;
 entity memoriaDados is
     generic (
         addressSize : natural := 8;
-        dataSize    : natural := 64;
+        dataSize    : natural := 8;
         datFileName : string  := "memDados_conteudo_inicial.dat"
     );
     port (
@@ -28,41 +29,30 @@ end entity memoriaDados;
 
 architecture arch_memoriaDados of memoriaDados is
 
+    -- Definição do tamanho da memória com base no addressSize
     type mem_t is array (0 to (2**addressSize)-1) of bit_vector(dataSize-1 downto 0);
 
     impure function inicializa(nome_do_arquivo : in string) return mem_t is
         file     arquivo  : text open read_mode is nome_do_arquivo;
         variable linha    : line;
-        variable temp_byte: bit_vector(7 downto 0); -- Variable to read 8 bits at a time
+        variable temp_bv  : bit_vector(dataSize-1 downto 0);
         variable temp_mem : mem_t;
     begin
-        -- Clear memory
+        -- Limpa a memória antes de carregar
         temp_mem := (others => (others => '0'));
         
         for i in temp_mem'range loop
-            -- We need to read 8 lines to build 1 64-bit word
-            -- Byte 7 (MSB)
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(63 downto 56) := temp_byte; end if;
-            -- Byte 6
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(55 downto 48) := temp_byte; end if;
-            -- Byte 5
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(47 downto 40) := temp_byte; end if;
-            -- Byte 4
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(39 downto 32) := temp_byte; end if;
-            -- Byte 3
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(31 downto 24) := temp_byte; end if;
-            -- Byte 2
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(23 downto 16) := temp_byte; end if;
-            -- Byte 1
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(15 downto 8)  := temp_byte; end if;
-            -- Byte 0 (LSB)
-            if not endfile(arquivo) then readline(arquivo, linha); read(linha, temp_byte); temp_mem(i)(7 downto 0)   := temp_byte; end if;
+            if not endfile(arquivo) then
+                readline(arquivo, linha);
+                read(linha, temp_bv);
+                temp_mem(i) := temp_bv;
+            end if;
         end loop;
         return temp_mem;
     end function;
 
     -- Sinais internos
-    signal mem      : mem_t := inicializa(datFileName); 
+    signal mem      : mem_t := inicializa(datFileName); -- Inicialização via arquivo
     signal addr_int : natural;
 
 begin 
@@ -72,8 +62,8 @@ begin
 
     wrt: process(clock)
     begin
-        if (clock='1' and clock'event) then 
-            if (wr='1') then                
+        if (clock='1' and clock'event) then -- Borda de subida
+            if (wr='1') then                -- Enable de escrita
                 mem(addr_int) <= data_i;
             end if;
         end if;
