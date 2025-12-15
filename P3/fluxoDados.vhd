@@ -198,7 +198,7 @@ begin
     InstMem: memoriaInstrucoes 
         generic map (
             addressSize => 7, 
-            dataSize => 8, -- o pdf cita 8 bits, mas a instrução é de 32 bits ?
+            dataSize => 32, -- o pdf cita 8 bits, mas a instrução é de 32 bits ?
             datFileName => "memInstrPolilegv8.dat"
         )
         port map (
@@ -210,7 +210,7 @@ begin
     Mux_Reg2: mux_n 
         generic map (dataSize => 5) -- pdf pede 64 mas as entradas tem so 5 bits ?
         port map (
-            in0  => instruction(20 downto 16), -- Rm
+            ino  => instruction(20 downto 16), -- Rm
             in1  => instruction(4 downto 0),   -- Rt/Rd
             sel  => reg2Loc,
             dOut => read_reg2_addr
@@ -247,13 +247,13 @@ begin
     Mux_ALU: mux_n 
         generic map (dataSize => 64)
         port map (
-            in0  => read_data2,
+            ino  => read_data2,
             in1  => imm_extended,
             sel  => aluSrc,
             dOut => alu_b
         );
 
-    ULA: ula
+    ULA_P3: ula
         port map (
             A  => read_data1,
             B  => alu_b,
@@ -267,7 +267,7 @@ begin
     DataMem: memoriaDados
         generic map (
             addressSize => 7, --endereço recebido pela ULA
-            dataSize => 8, -- pdf cita 8 bits, mas o dado é de 64 bits ???
+            dataSize => 64, -- pdf cita 8 bits, mas o dado é de 64 bits ???
             datFileName => "memDadosInicialPolilegv8.dat")
         port map (
             clock  => clock,
@@ -284,7 +284,7 @@ begin
     Mux_WriteBank: mux_n 
         generic map (dataSize => 64)
         port map (
-            in0  => alu_result,
+            ino  => alu_result,
             in1  => mem_read_data,
             sel  => memToReg,
             dOut => write_data
@@ -323,7 +323,7 @@ begin
     Mux_PC: mux_n
         generic map (dataSize => 64)
         port map (
-            in0  => pc_plus_4, -- próxima instrução sequencial
+            ino  => pc_plus_4, -- próxima instrução sequencial
             in1  => branch_target, -- endereço de desvio
             sel  => pc_src, -- seleção do desvio
             dOut => pc_in -- próximo valor do PC
