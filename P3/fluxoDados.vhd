@@ -50,7 +50,7 @@ architecture arch_fluxoDados of fluxoDados is
     component memoriaInstrucoes is
         generic (
             addressSize : natural := 8;
-            dataSize    : natural := 8; 
+            dataSize    : natural := 32; 
             datFileName : string  := "memInstrPolilegv8.dat" 
         );
         port (
@@ -62,7 +62,7 @@ architecture arch_fluxoDados of fluxoDados is
     component memoriaDados is
         generic (
             addressSize : natural := 8;
-            dataSize    : natural := 8;
+            dataSize    : natural := 64;
             datFileName : string  := "memDadosInicialPolilegv8.dat"
         );
         port (
