@@ -1,3 +1,11 @@
+------------------------------------------------------------
+-- Andre Saliba     NUSP: 15439911   Turma: 1 Grupo:T1G08 --
+-- Arthur Damasio   NUSP: 15635138   Turma: 1 Grupo:T1G08 --
+-- Joao Vitor Rocha NUSP: 15638465   Turma: 1 Grupo:T1G08 --
+-- Henrique Falcao  NUSP: 15459010   Turma: 1 Grupo:T1G08 --
+-- Pedro Beraldo    NUSP: 15484328   Turma: 1 Grupo:T1G08 --
+-- Thiago Medeiros  NUSP: 15651404   Turma: 1 Grupo:T1G08 --
+------------------------------------------------------------
 library ieee;
 use ieee.numeric_bit.all;
 use std.textio.all;
