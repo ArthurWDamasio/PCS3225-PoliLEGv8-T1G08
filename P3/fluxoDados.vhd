@@ -51,7 +51,7 @@ architecture arch_fluxoDados of fluxoDados is
         generic (
             addressSize : natural := 8;
             dataSize    : natural := 8; 
-            datFileName : string  := "memInstr_conteudo.dat" 
+            datFileName : string  := "memInstrPolilegv8.dat" 
         );
         port (
             addr : in  bit_vector(addressSize-1 downto 0);
@@ -63,7 +63,7 @@ architecture arch_fluxoDados of fluxoDados is
         generic (
             addressSize : natural := 8;
             dataSize    : natural := 8;
-            datFileName : string  := "memDados_conteudo_inicial.dat"
+            datFileName : string  := "memDadosInicialPolilegv8.dat"
         );
         port (
             clock  : in  bit;
