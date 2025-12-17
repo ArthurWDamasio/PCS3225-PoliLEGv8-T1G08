@@ -6,6 +6,11 @@
 -- Pedro Beraldo    NUSP: 15484328   Turma: 1 Grupo:T1G08 --
 -- Thiago Medeiros  NUSP: 15651404   Turma: 1 Grupo:T1G08 --
 ------------------------------------------------------------
+library ieee;
+library std;
+use ieee.numeric_bit.all;
+use std.all;
+
 
 entity fluxoDados is
     port(
@@ -49,9 +54,9 @@ architecture arch_fluxoDados of fluxoDados is
 
     component memoriaInstrucoes is
         generic (
-            addressSize : natural := 8;
-            dataSize    : natural := 32; 
-            datFileName : string  := "memInstrPolilegv8.dat" 
+            addressSize : natural ;
+            dataSize    : natural ; 
+            datFileName : string   
         );
         port (
             addr : in  bit_vector(addressSize-1 downto 0);
@@ -61,9 +66,9 @@ architecture arch_fluxoDados of fluxoDados is
 
     component memoriaDados is
         generic (
-            addressSize : natural := 8;
-            dataSize    : natural := 64;
-            datFileName : string  := "memDadosInicialPolilegv8.dat"
+            addressSize : natural ;
+            dataSize    : natural ;
+            datFileName : string  
         );
         port (
             clock  : in  bit;
@@ -86,7 +91,7 @@ architecture arch_fluxoDados of fluxoDados is
             dataSize: natural := 64
         );
         port(
-            in0  : in  bit_vector(dataSize-1 downto 0);
+            ino  : in  bit_vector(dataSize-1 downto 0);
             in1  : in  bit_vector(dataSize-1 downto 0);
             sum  : out bit_vector(dataSize-1 downto 0);
             cout : out bit
@@ -109,15 +114,15 @@ architecture arch_fluxoDados of fluxoDados is
 
     component sign_extend is
         generic (
-            dataISize       : natural := 32; -- Tamanho do dado de entrada [cite: 226]
-            dataOSize       : natural := 64; -- Tamanho do dado de saida [cite: 227]
-            dataMaxPosition : natural := 5   -- Bits para definir as posicoes (log2(dataISize)) [cite: 229]
+            dataISize       : natural := 32; -- Tamanho do dado de entrada 
+            dataOSize       : natural := 64; -- Tamanho do dado de saida 
+            dataMaxPosition : natural := 5   -- Bits para definir as posicoes (log2(dataISize)) 
         );
         port(
             inData      : in bit_vector(dataISize-1 downto 0);       -- Vetor de entrada
-            inDataStart : in bit_vector(dataMaxPosition-1 downto 0); -- Posicao do bit mais significativo (sinal) [cite: 238]
-            inDataEnd   : in bit_vector(dataMaxPosition-1 downto 0); -- Posicao do bit menos significativo [cite: 242]
-            outData     : out bit_vector(dataOSize-1 downto 0)       -- Vetor de saida estendido [cite: 246]
+            inDataStart : in bit_vector(dataMaxPosition-1 downto 0); -- Posicao do bit mais significativo (sinal) 
+            inDataEnd   : in bit_vector(dataMaxPosition-1 downto 0); -- Posicao do bit menos significativo 
+            outData     : out bit_vector(dataOSize-1 downto 0)       -- Vetor de saida estendido 
         );
     end component sign_extend;
 
@@ -158,9 +163,19 @@ architecture arch_fluxoDados of fluxoDados is
     end component ula;
 
    -- Sinais Internos
-    signal pc_in, pc_out, pc_plus_4, branch_target : bit_vector(63 downto 0); --gerenciam o endereço da instrução
+    signal pc_in, pc_plus_4, branch_target : bit_vector(6 downto 0); -- próximo valor do PC e PC + 4
     signal instruction : bit_vector(31 downto 0); --Armazena a instrução de 32 bits
+
+    signal instruction8 : bit_vector(7 downto 0);
+    signal instruction16 : bit_vector(7 downto 0);
+    signal instruction24 : bit_vector(7 downto 0);
+    signal instruction32 : bit_vector(7 downto 0);
     
+    signal pc_out0 : bit_vector(6 downto 0);
+    signal pc_out1 : bit_vector(6 downto 0);
+    signal pc_out2 : bit_vector(6 downto 0);
+    signal pc_out3 : bit_vector(6 downto 0);
+
     -- Sinais do Banco de Registradores
     signal read_reg2_addr : bit_vector(4 downto 0); -- Armazena o endereço do segundo registrador que precisa ser lido.
     signal write_data, read_data1, read_data2 : bit_vector(63 downto 0); -- leitura ou escrita do dado de 64 bits que sera gravado no registrador de destino
@@ -179,38 +194,75 @@ architecture arch_fluxoDados of fluxoDados is
     -- sinal de seleção do multiplexador do PC
     signal pc_src : bit;
     
-    -- Constante 4 para incremento do PC (64 bits)
-    constant C_FOUR : bit_vector(63 downto 0) := (2 => '1', others => '0'); -- Valor 4
+    -- Constante 4 para incremento do PC (7 bits)
+    constant C_FOUR : bit_vector(6 downto 0) := (2 => '1', others => '0'); -- Valor 4
 
 begin
+    instruction <= instruction8 & instruction16 & instruction24 & instruction32; -- 0000 0000 0000 0000
     opcode <= instruction(31 downto 21);
+    pc_out1 <= bit_vector(unsigned(pc_out0) +  "0000001"); 
+    pc_out2 <= bit_vector(unsigned(pc_out0) +  "0000010"); 
+    pc_out3 <= bit_vector(unsigned(pc_out0) +  "0000011"); 
 
     PC: reg 
-        generic map (dataSize => 64)
+        generic map (dataSize => 7)
         port map (
             clock => clock, 
             reset => reset, 
             enable => '1', 
             d => pc_in, 
-            q => pc_out
+            q => pc_out0
         );
 
-    InstMem: memoriaInstrucoes 
+    InstMem1: memoriaInstrucoes 
         generic map (
             addressSize => 7, 
-            dataSize => 8, -- o pdf cita 8 bits, mas a instrução é de 32 bits ?
+            dataSize => 8, 
             datFileName => "memInstrPolilegv8.dat"
         )
         port map (
-            addr => pc_out(6 downto 0), 
-            data => instruction
+            addr => pc_out0, 
+            data => instruction8
         );
 
-    --Seleciona o endereço de leitura do registrador 2
+    InstMem2: memoriaInstrucoes 
+        generic map (
+            addressSize => 7, 
+            dataSize => 8, 
+            datFileName => "memInstrPolilegv8.dat"
+        )
+        port map (
+            addr => pc_out1, 
+            data => instruction16
+        );
+    
+    InstMem3: memoriaInstrucoes 
+        generic map (
+            addressSize => 7, 
+            dataSize => 8, 
+            datFileName => "./memInstrPolilegv8.dat"
+        )
+        port map (
+            addr => pc_out2, 
+            data => instruction24
+        );
+    
+    InstMem4: memoriaInstrucoes 
+        generic map (
+            addressSize => 7, 
+            dataSize => 8, 
+            datFileName => "./memInstrPolilegv8.dat"
+        )
+        port map (
+            addr => pc_out3, 
+            data => instruction32
+        );
+
+	--Seleciona o endereço de leitura do registrador 2
     Mux_Reg2: mux_n 
         generic map (dataSize => 5) -- pdf pede 64 mas as entradas tem so 5 bits ?
         port map (
-            in0  => instruction(20 downto 16), -- Rm
+            ino  => instruction(20 downto 16), -- Rm
             in1  => instruction(4 downto 0),   -- Rt/Rd
             sel  => reg2Loc,
             dOut => read_reg2_addr
@@ -247,13 +299,13 @@ begin
     Mux_ALU: mux_n 
         generic map (dataSize => 64)
         port map (
-            in0  => read_data2,
+            ino  => read_data2,
             in1  => imm_extended,
             sel  => aluSrc,
             dOut => alu_b
         );
 
-    ULA: ula
+    ULA_P3: ula
         port map (
             A  => read_data1,
             B  => alu_b,
@@ -267,7 +319,7 @@ begin
     DataMem: memoriaDados
         generic map (
             addressSize => 7, --endereço recebido pela ULA
-            dataSize => 8, -- pdf cita 8 bits, mas o dado é de 64 bits ???
+            dataSize => 64, -- pdf cita 8 bits, mas o dado é de 64 bits ???
             datFileName => "memDadosInicialPolilegv8.dat")
         port map (
             clock  => clock,
@@ -284,7 +336,7 @@ begin
     Mux_WriteBank: mux_n 
         generic map (dataSize => 64)
         port map (
-            in0  => alu_result,
+            ino  => alu_result,
             in1  => mem_read_data,
             sel  => memToReg,
             dOut => write_data
@@ -292,9 +344,9 @@ begin
     
     -- Incremento do PC +4
     PC_4: adder_n  
-        generic map (dataSize => 64)
+        generic map (dataSize => 7)
         port map (
-            in0 => pc_out,
+            ino => pc_out0,
             in1 => C_FOUR, 
             sum => pc_plus_4,
             cout => open
@@ -310,10 +362,10 @@ begin
 
     -- PC + Offset deslocado
     PC_Branch: adder_n
-        generic map (dataSize => 64)
+        generic map (dataSize => 7)
         port map (
-            in0 => pc_out, -- PC atual
-            in1 => imm_shifted, -- offset deslocado
+            ino => pc_out0, -- PC atual
+            in1 => imm_shifted(6 downto 0), -- offset deslocado
             sum => branch_target, -- novo endereço de branch
             cout => open
         );
@@ -321,9 +373,9 @@ begin
     pc_src <= (branch and zero_flag) or uncondBranch; --seleção do próximo PC
 
     Mux_PC: mux_n
-        generic map (dataSize => 64)
+        generic map (dataSize => 7)
         port map (
-            in0  => pc_plus_4, -- próxima instrução sequencial
+            ino  => pc_plus_4, -- próxima instrução sequencial
             in1  => branch_target, -- endereço de desvio
             sel  => pc_src, -- seleção do desvio
             dOut => pc_in -- próximo valor do PC

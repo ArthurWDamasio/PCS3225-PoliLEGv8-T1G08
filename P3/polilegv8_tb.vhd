@@ -6,139 +6,170 @@
 -- Pedro Beraldo    NUSP: 15484328   Turma: 1 Grupo:T1G08 --
 -- Thiago Medeiros  NUSP: 15651404   Turma: 1 Grupo:T1G08 --
 ------------------------------------------------------------
+library ieee;
+use ieee.numeric_bit.all;
 
-entity tb_polilegv8 is
-end entity tb_polilegv8;
+entity tb_polilegv8_debug is
+end entity tb_polilegv8_debug;
 
-architecture arch_tb_polilegv8 of tb_polilegv8 is
+architecture simulation of tb_polilegv8_debug is
 
-    component polilegv8 is
-        port (
-            clock : in bit;
-            reset : in bit
+    -- Componentes Originais (interface idêntica aos arquivos .vhd)
+    component fluxoDados is
+        port(
+            clock: in bit;
+            reset: in bit;
+            extendMSB: in bit_vector (4 downto 0);
+            extendLSB: in bit_vector (4 downto 0);
+            reg2Loc: in bit;
+            regWrite: in bit;
+            aluSrc: in bit;
+            alu_control: in bit_vector (3 downto 0);
+            branch: in bit;
+            uncondBranch: in bit;
+            memRead: in bit;
+            memWrite: in bit;
+            memToReg: in bit;
+            opcode: out bit_vector (10 downto 0)
+        );
+    end component;
+    
+    component unidadeControle is
+        port(
+            opcode: in bit_vector (10 downto 0);
+            extendMSB: out bit_vector (4 downto 0);
+            extendLSB: out bit_vector (4 downto 0);
+            reg2Loc: out bit;
+            regWrite: out bit;
+            aluSrc: out bit;
+            alu_control: out bit_vector (3 downto 0);
+            branch: out bit;
+            uncondBranch: out bit;
+            memRead: out bit;
+            memWrite: out bit;
+            memToReg: out bit
         );
     end component;
 
-    -- Sinais de teste
-    signal clock_tb : bit := '0';
-    signal reset_tb : bit := '1';
-    
-    constant PERIODO_CLK : time := 20 ns; -- 50 MHz
-    constant TEMPO_SIMULACAO : time := 500 ns; 
-    
-    -- para depuração
-    function bit_vector_to_hex(bv : bit_vector) return string is
-        constant HEX_DIGITS : string(1 to 16) := "0123456789ABCDEF";
-        variable result : string(1 to (bv'length+3)/4);
-        variable temp : bit_vector(3 downto 0);
-        variable index : natural;
-    begin
-        for i in result'range loop
-            index := (result'length - i) * 4;
-            if index + 3 < bv'length then
-                temp := bv(index+3 downto index);
-            else
-                temp := (others => '0');
-                for j in 0 to 3 loop
-                    if index + j < bv'length then
-                        temp(j) := bv(index + j);
-                    end if;
-                end loop;
-            end if;
-            case temp is
-                when "0000" => result(i) := HEX_DIGITS(1);
-                when "0001" => result(i) := HEX_DIGITS(2);
-                when "0010" => result(i) := HEX_DIGITS(3);
-                when "0011" => result(i) := HEX_DIGITS(4);
-                when "0100" => result(i) := HEX_DIGITS(5);
-                when "0101" => result(i) := HEX_DIGITS(6);
-                when "0110" => result(i) := HEX_DIGITS(7);
-                when "0111" => result(i) := HEX_DIGITS(8);
-                when "1000" => result(i) := HEX_DIGITS(9);
-                when "1001" => result(i) := HEX_DIGITS(10);
-                when "1010" => result(i) := HEX_DIGITS(11);
-                when "1011" => result(i) := HEX_DIGITS(12);
-                when "1100" => result(i) := HEX_DIGITS(13);
-                when "1101" => result(i) := HEX_DIGITS(14);
-                when "1110" => result(i) := HEX_DIGITS(15);
-                when "1111" => result(i) := HEX_DIGITS(16);
-                when others => result(i) := 'X';
-            end case;
-        end loop;
-        return result;
-    end function;
-    
-    function to_string(b : bit) return string is
-    begin
-        if b = '1' then
-            return "1";
-        else
-            return "0";
-        end if;
-    end function;
-    
-    function to_string(bv : bit_vector) return string is
-        variable result : string(1 to bv'length);
-    begin
-        for i in bv'range loop
-            if bv(i) = '1' then
-                result(bv'length - i) := '1';
-            else
-                result(bv'length - i) := '0';
-            end if;
-        end loop;
-        return result;
-    end function;
+    -- Sinais de Clock e Reset
+    signal tb_clock : bit := '0';
+    signal tb_reset : bit := '0';
+    constant CLK_PERIOD : time := 10 ns; 
+
+    -- Sinais Intermediários para Debug (White-Box)
+    signal opcode_debug       : bit_vector (10 downto 0);
+    signal extendMSB_debug    : bit_vector (4 downto 0);
+    signal extendLSB_debug    : bit_vector (4 downto 0);
+    signal reg2Loc_debug      : bit;
+    signal regWrite_debug     : bit;
+    signal aluSrc_debug       : bit;
+    signal alu_control_debug  : bit_vector (3 downto 0);
+    signal branch_debug       : bit;
+    signal uncondBranch_debug : bit;
+    signal memRead_debug      : bit;
+    signal memWrite_debug     : bit;
+    signal memToReg_debug     : bit;
+
+    -- String para facilitar a leitura no Waveform
+    signal debug_instr_str : string(1 to 4) := "...."; 
 
 begin
 
-    DUT: polilegv8
+    -- Geração do Clock (100 MHz)
+    tb_clock <= not tb_clock after CLK_PERIOD / 2;
+
+    -- Instância: Unidade de Controle
+    UC_Inst : unidadeControle
         port map (
-            clock => clock_tb,
-            reset => reset_tb
+            opcode       => opcode_debug,
+            extendMSB    => extendMSB_debug,
+            extendLSB    => extendLSB_debug,
+            reg2Loc      => reg2Loc_debug,
+            regWrite     => regWrite_debug,
+            aluSrc       => aluSrc_debug,
+            alu_control  => alu_control_debug,
+            branch       => branch_debug,
+            uncondBranch => uncondBranch_debug,
+            memRead      => memRead_debug,
+            memWrite     => memWrite_debug,
+            memToReg     => memToReg_debug
         );
 
-    process -- geração do clock
+    -- Instância: Fluxo de Dados
+    FD_Inst : fluxoDados
+        port map (
+            clock        => tb_clock,
+            reset        => tb_reset,
+            extendMSB    => extendMSB_debug,
+            extendLSB    => extendLSB_debug,
+            reg2Loc      => reg2Loc_debug,
+            regWrite     => regWrite_debug,
+            aluSrc       => aluSrc_debug,
+            alu_control  => alu_control_debug,
+            branch       => branch_debug,
+            uncondBranch => uncondBranch_debug,
+            memRead      => memRead_debug,
+            memWrite     => memWrite_debug,
+            memToReg     => memToReg_debug,
+            opcode       => opcode_debug
+        );
+
+    -- Processo de Estímulo e Controle de Fim de Simulação
+    stim_proc: process
     begin
-        while now < TEMPO_SIMULACAO loop
-            clock_tb <= '0';
-            wait for PERIODO_CLK / 2;
-            clock_tb <= '1';
-            wait for PERIODO_CLK / 2;
-        end loop;
-        report "Simulação finalizada após " & time'image(now);
+        -- 1. Reset inicial
+        tb_reset <= '1';
+        wait for CLK_PERIOD * 2; 
+        tb_reset <= '0';
+        
+        -- 2. Aguarda a execução do programa
+        -- O programa fornecido na imagem tem cerca de 14 instruções.
+        -- Como termina em um loop infinito (B #0), não há sinal de "done" automático.
+        -- Esperamos ciclos suficientes para rodar todas as instruções e entrar no loop.
+        wait for 300 ns; -- 30 ciclos de clock (suficiente para o programa)
+        
+        -- 3. Encerra a simulação forçadamente
+        report "Fim do programa (Timeout atingido para loop infinito)" severity note;
+        assert false report "Simulation Finished Successfully" severity failure;
         wait;
     end process;
 
-    process -- Processo de sequência de reset
+    -- Monitor de Instruções (Decodificador de Strings)
+    -- Baseado estritamente na tabela da imagem fornecida
+    monitor_proc: process(opcode_debug)
     begin
-        reset_tb <= '1'; -- Reset inicial
-        wait for PERIODO_CLK * 2;
-        reset_tb <= '0';
-        wait for TEMPO_SIMULACAO - PERIODO_CLK * 2; -- Aguarda execução do programa completo
-        wait;  -- Finaliza simulação
+        -- Reset da string para evitar latch de valores antigos errados
+        debug_instr_str <= "????";
+
+        if opcode_debug = "11111000010" then
+            debug_instr_str <= "LDUR"; --
+            
+        elsif opcode_debug = "11111000000" then
+            debug_instr_str <= "STUR"; --
+            
+        elsif opcode_debug = "10001011000" then
+            debug_instr_str <= "ADD "; --
+            
+        elsif opcode_debug = "11001011000" then
+            debug_instr_str <= "SUB "; --
+            
+        elsif opcode_debug = "10001010000" then
+            debug_instr_str <= "AND "; --
+            
+        elsif opcode_debug = "10101010000" then
+            debug_instr_str <= "ORR "; --
+            
+        -- CBZ: 10110100XXX (Checa apenas os 8 bits superiores)
+        elsif opcode_debug(10 downto 3) = "10110100" then
+            debug_instr_str <= "CBZ "; --
+
+        -- Branch Incondicional (B): 000101XXXXX (Padrão do LEGv8/Código UC)
+        elsif opcode_debug(10 downto 5) = "000101" then
+            debug_instr_str <= "B   ";
+            
+        else
+            debug_instr_str <= "UNKN"; -- Unknown/Nop
+        end if;
     end process;
 
-    process -- geracao de logs
-        variable ciclo : integer := 0;
-        variable ultimo_pc : bit_vector(63 downto 0) := (others => '0');
-    begin
-
-        wait until reset_tb = '0'; -- Aguarda fim do reset
-        while now < TEMPO_SIMULACAO loop -- Monitora a cada ciclo de clock
-            wait until rising_edge(clock_tb);
-            ciclo := ciclo + 1;
-            
-            if ciclo mod 5 = 0 then  -- Report a cada 5 ciclos
-                report "Ciclo " & integer'image(ciclo) & " - Tempo: " & time'image(now);
-            end if;
-            
-            if ciclo > 100 then
-                report "Execução do programa completa ou em loop infinito" severity note;
-                exit;
-            end if;
-        end loop;
-        wait;
-    end process;
-
-end architecture arch_tb_polilegv8;
+end architecture simulation;

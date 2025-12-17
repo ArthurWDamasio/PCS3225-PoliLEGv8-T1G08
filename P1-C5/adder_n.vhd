@@ -14,7 +14,7 @@ entity adder_n is
         dataSize: natural := 64
     );
     port(
-        in0  : in  bit_vector(dataSize-1 downto 0);
+        ino  : in  bit_vector(dataSize-1 downto 0);
         in1  : in  bit_vector(dataSize-1 downto 0);
         sum  : out bit_vector(dataSize-1 downto 0);
         cout : out bit
@@ -39,7 +39,7 @@ begin
     gen_adder: for i in 0 to dataSize-1 generate
         inst_fulladder: fullAdder
             port map (
-                a    => in0(i),
+                a    => ino(i),
                 b    => in1(i),
                 cin  => c(i),
                 s    => sum(i),

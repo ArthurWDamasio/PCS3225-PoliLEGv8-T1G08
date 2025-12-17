@@ -20,7 +20,7 @@ architecture testbench of tb_adder_n is
             dataSize: natural := 64
         );
         port(
-            in0  : in  bit_vector(dataSize-1 downto 0);
+            ino  : in  bit_vector(dataSize-1 downto 0);
             in1  : in  bit_vector(dataSize-1 downto 0);
             sum  : out bit_vector(dataSize-1 downto 0);
             cout : out bit
@@ -37,7 +37,7 @@ architecture testbench of tb_adder_n is
     constant C_ALT_5    : bit_vector(N-1 downto 0) := x"5555555555555555";
     
     signal simulando : bit := '1';
-    signal in0       : bit_vector(N-1 downto 0) := (others => '0');
+    signal ino       : bit_vector(N-1 downto 0) := (others => '0');
     signal in1       : bit_vector(N-1 downto 0) := (others => '0');
     signal sum       : bit_vector(N-1 downto 0);
     signal cout      : bit;
@@ -47,7 +47,7 @@ begin
     UUT: adder_n
         generic map ( dataSize => N )
         port map (
-            in0  => in0,
+            ino  => ino,
             in1  => in1,
             sum  => sum,
             cout => cout
@@ -65,12 +65,12 @@ begin
         -- =========================================================
         -- Cenario 1: Identidade (0+0 e X+0)
         -- =========================================================
-        in0 <= C_ZERO; in1 <= C_ZERO;
+        ino <= C_ZERO; in1 <= C_ZERO;
         wait for TIME_DELTA;
         assert sum = C_ZERO and cout = '0' 
             report "Falha Cenario 1.1: 0+0 falhou" severity error;
 
-        in0 <= C_ALT_A; in1 <= C_ZERO;
+        ino <= C_ALT_A; in1 <= C_ZERO;
         wait for TIME_DELTA;
         assert sum = C_ALT_A and cout = '0'
             report "Falha Cenario 1.2: X+0 falhou" severity error;
@@ -80,7 +80,7 @@ begin
         -- =========================================================
         -- Cenario 2: Incremento Unitario (X+1)
         -- =========================================================
-        in0 <= C_ZERO; in1 <= v_one;
+        ino <= C_ZERO; in1 <= v_one;
         wait for TIME_DELTA;
         assert sum = v_one and cout = '0'
             report "Falha Cenario 2: 0+1 falhou" severity error;
@@ -90,7 +90,7 @@ begin
         -- =========================================================
         -- Cenario 3: Padroes Complementares (Integridade)
         -- =========================================================
-        in0 <= C_ALT_A; in1 <= C_ALT_5;
+        ino <= C_ALT_A; in1 <= C_ALT_5;
         wait for TIME_DELTA;
         assert sum = C_MAX and cout = '0'
             report "Falha Cenario 3: Padroes alternados falhou" severity error;
@@ -101,7 +101,7 @@ begin
         -- Cenario 4: Overflow Global (Ripple Carry)
         -- (Max + 1) deve dar 0 com Cout=1
         -- =========================================================
-        in0 <= C_MAX; in1 <= v_one;
+        ino <= C_MAX; in1 <= v_one;
         wait for TIME_DELTA;
         
         -- Verifica se sum zerou
@@ -117,7 +117,7 @@ begin
         -- =========================================================
         -- Cenario 5: Aritmetica Simples (10+20=30)
         -- =========================================================
-        in0 <= bit_vector(to_unsigned(10, N));
+        ino <= bit_vector(to_unsigned(10, N));
         in1 <= bit_vector(to_unsigned(20, N));
         wait for TIME_DELTA;
         
@@ -129,7 +129,7 @@ begin
         -- =========================================================
         -- Cenario 6: Transicao de Meio de Escala
         -- =========================================================
-        in0 <= x"000000000000FFFF"; in1 <= v_one;
+        ino <= x"000000000000FFFF"; in1 <= v_one;
         wait for TIME_DELTA;
         assert sum = x"0000000000010000"
             report "Falha Cenario 6: Carry de meio falhou" severity error;
