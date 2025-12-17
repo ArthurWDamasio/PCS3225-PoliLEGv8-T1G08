@@ -64,7 +64,7 @@ begin
         extendMSB_aux := "00000"; 
         extendLSB_aux := "00000";
         
-        if opcode = C_ADD then 
+        if opcode = ADD then 
             regWrite_aux := '1';
             alu_control_aux := "0010"; -- ADD
 
