@@ -240,7 +240,7 @@ begin
         generic map (
             addressSize => 7, 
             dataSize => 8, 
-            datFileName => "./memInstrPolilegv8.dat"
+            datFileName => "memInstrPolilegv8.dat"
         )
         port map (
             addr => pc_out2, 
@@ -251,7 +251,7 @@ begin
         generic map (
             addressSize => 7, 
             dataSize => 8, 
-            datFileName => "./memInstrPolilegv8.dat"
+            datFileName => "memInstrPolilegv8.dat"
         )
         port map (
             addr => pc_out3, 
